@@ -11,14 +11,18 @@ const DIRECTION = {
 }
 const moveInterval = 150;
 let level = 1;
+let currentMoveInterval = moveInterval;
 function levelUp() {
-    level++;    
+    level++;
+    currentMoveInterval -= 20;
     alert(`Selamat anda Naik level ${level}`);
     updateHtml();
 }
 function updateHtml() {
     let levelHtml = document.getElementById("level");
     levelHtml.innerText = level;
+    let speedHtml = document.getElementById("speed");
+    speedHtml.innerText = currentMoveInterval;
 }
 
 function initPosition() {
@@ -183,7 +187,7 @@ function move(snake) {
     if (!checkCollision([snake1])) {
         setTimeout(function() {
             move(snake);
-        }, moveInterval);
+        }, currentMoveInterval);
     } else {
         initGame();
     }
