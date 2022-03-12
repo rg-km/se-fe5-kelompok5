@@ -10,6 +10,10 @@ const DIRECTION = {
     DOWN: 3,
 }
 const MOVE_INTERVAL = 150;
+let audioGameOver = new Audio();
+let audioAppleBite = new Audio();
+audioGameOver.src = "assets/game-over.mp3";
+audioAppleBite.src = "assets/apple-bite.mp3";
 
 function initPosition() {
     return {
@@ -31,38 +35,33 @@ function initDirection() {
     return Math.floor(Math.random() * 4);
 }
 
-function initSnake(color) {
+function initSnake() {
     return {
-        color: color,
         ...initHeadAndBody(),
         direction: initDirection(),
         score: 0,
     }
 }
-let snake1 = initSnake("purple");
+let snake1 = initSnake();
 
-let apple = {
-    color: "red",
+let apples = [{    
     position: initPosition(),
-}
+},
+{    
+    position: initPosition(),
+}]
 
-function drawCell(ctx, x, y, color) {
-    ctx.fillStyle = color;
-    ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+function drawImagePixel(ctx, x, y, img) {
+	ctx.drawImage(img, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 }
 
 function drawScore(snake) {
     let scoreCanvas;
-    if (snake.color == snake1.color) {
-        scoreCanvas = document.getElementById("score1Board");
-    } else {
-        scoreCanvas = document.getElementById("score2Board");
-    }
+    scoreCanvas = document.getElementById("score1Board");
     let scoreCtx = scoreCanvas.getContext("2d");
 
     scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
     scoreCtx.font = "30px Arial";
-    scoreCtx.fillStyle = snake.color
     scoreCtx.fillText(snake.score, 10, scoreCanvas.scrollHeight / 2);
 }
 
@@ -73,12 +72,25 @@ function draw() {
 
         ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
         
-        drawCell(ctx, snake1.head.x, snake1.head.y, snake1.color);
+        var img = document.getElementById("head");
+        drawImagePixel(ctx, snake1.head.x, snake1.head.y, img);
+
         for (let i = 1; i < snake1.body.length; i++) {
-            drawCell(ctx, snake1.body[i].x, snake1.body[i].y, snake1.color);
+            if (i == snake1.body.length - 1) {
+                var img = document.getElementById("tail");
+                drawImagePixel(ctx, snake1.body[i].x, snake1.body[i].y, img);
+            } else {
+                var img = document.getElementById("body");
+                drawImagePixel(ctx, snake1.body[i].x, snake1.body[i].y, img);
+            }
+            
         }
-		
-        drawCell(ctx, apple.position.x, apple.position.y, apple.color);
+
+        for (let i = 0; i < apples.length; i++) {
+            let apple = apples[i];
+            var img = document.getElementById("apple");
+            drawImagePixel(ctx, apple.position.x, apple.position.y, img);
+        }
 
         drawScore(snake1);
     }, REDRAW_INTERVAL);
@@ -99,36 +111,40 @@ function teleport(snake) {
     }
 }
 
-function eat(snake, apple) {
-    if (snake.head.x == apple.position.x && snake.head.y == apple.position.y) {
-        apple.position = initPosition();
-        snake.score++;
-        snake.body.push({x: snake.head.x, y: snake.head.y});
+function eat(snake, apples) {
+    for (let i = 0; i < apples.length; i++) {
+        let apple = apples[i];
+        if (snake.head.x == apple.position.x && snake.head.y == apple.position.y) {
+            apple.position = initPosition();
+            audioAppleBite.play();
+            snake.score++;
+            snake.body.push({x: snake.head.x, y: snake.head.y});
+        }
     }
 }
 
 function moveLeft(snake) {
     snake.head.x--;
     teleport(snake);
-    eat(snake, apple);
+    eat(snake, apples);
 }
 
 function moveRight(snake) {
     snake.head.x++;
     teleport(snake);
-    eat(snake, apple);
+    eat(snake, apples);
 }
 
 function moveDown(snake) {
     snake.head.y++;
     teleport(snake);
-    eat(snake, apple);
+    eat(snake, apples);
 }
 
 function moveUp(snake) {
     snake.head.y--;
     teleport(snake);
-    eat(snake, apple);
+    eat(snake, apples);
 }
 
 function checkCollision(snakes) {
@@ -144,8 +160,9 @@ function checkCollision(snakes) {
         }
     }
     if (isCollide) {
+        audioGameOver.play();
         alert("Game over");
-        snake1 = initSnake("purple");
+        snake1 = initSnake();
     }
     return isCollide;
 }
