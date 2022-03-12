@@ -9,12 +9,17 @@ const DIRECTION = {
     UP: 2,
     DOWN: 3,
 }
-const moveInterval = 150;
+const moveInterval = 120;
 let level = 1;
 let currentMoveInterval = moveInterval;
 function levelUp() {
     level++;
-    currentMoveInterval -= 20;
+    if (currentMoveInterval > 40) {
+        currentMoveInterval -= 20;
+    } else {
+        currentMoveInterval = 40;
+    }
+    
     alert(`Selamat anda Naik level ${level}`);
     updateHtml();
 }
