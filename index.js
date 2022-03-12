@@ -9,7 +9,17 @@ const DIRECTION = {
     UP: 2,
     DOWN: 3,
 }
-const MOVE_INTERVAL = 150;
+const moveInterval = 150;
+let level = 1;
+function levelUp() {
+    level++;    
+    alert(`Selamat anda Naik level ${level}`);
+    updateHtml();
+}
+function updateHtml() {
+    let levelHtml = document.getElementById("level");
+    levelHtml.innerText = level;
+}
 
 function initPosition() {
     return {
@@ -104,6 +114,10 @@ function eat(snake, apple) {
         apple.position = initPosition();
         snake.score++;
         snake.body.push({x: snake.head.x, y: snake.head.y});
+        if (snake.score % 5 === 0) {
+            levelUp();
+            console.log(levelUp);
+        }
     }
 }
 
@@ -169,7 +183,7 @@ function move(snake) {
     if (!checkCollision([snake1])) {
         setTimeout(function() {
             move(snake);
-        }, MOVE_INTERVAL);
+        }, moveInterval);
     } else {
         initGame();
     }
