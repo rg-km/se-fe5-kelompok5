@@ -12,7 +12,7 @@ const DIRECTION = {
 
 const moveInterval = 120;
 let currentMoveInterval = moveInterval;
-let level = 1;
+let level = 2;
 let life = 3;
 let score = 0;
 
@@ -33,6 +33,20 @@ let ObstaclePerLevel = {
 		{
 			x: 3,
 			y: 14,
+			length: 24,
+			direction: 'horizontal',
+		},
+	],
+	2: [
+		{
+			x: 3,
+			y: 10,
+			length: 24,
+			direction: 'horizontal',
+		},
+		{
+			x: 3,
+			y: 20,
 			length: 24,
 			direction: 'horizontal',
 		},
