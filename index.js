@@ -9,11 +9,31 @@ const DIRECTION = {
     UP: 2,
     DOWN: 3,
 }
-const MOVE_INTERVAL = 150;
+
+const moveInterval = 120;
+let level = 1;
+let currentMoveInterval = moveInterval;
 let audioGameOver = new Audio();
 let audioAppleBite = new Audio();
 audioGameOver.src = "assets/game-over.mp3";
 audioAppleBite.src = "assets/apple-bite.mp3";
+function levelUp() {
+    level++;
+    if (currentMoveInterval > 40) {
+        currentMoveInterval -= 20;
+    } else {
+        currentMoveInterval = 40;
+    }
+    
+    alert(`Selamat anda Naik level ${level}`);
+    updateHtml();
+}
+function updateHtml() {
+    let levelHtml = document.getElementById("level");
+    levelHtml.innerText = level;
+    let speedHtml = document.getElementById("speed");
+    speedHtml.innerText = currentMoveInterval;
+}
 
 function initPosition() {
     return {
@@ -119,6 +139,12 @@ function eat(snake, apples) {
             audioAppleBite.play();
             snake.score++;
             snake.body.push({x: snake.head.x, y: snake.head.y});
+            if (level < 5) {
+                if (snake.score % 5 === 0) {
+                    levelUp();
+                    console.log(levelUp);
+                }
+            }
         }
     }
 }
@@ -186,7 +212,7 @@ function move(snake) {
     if (!checkCollision([snake1])) {
         setTimeout(function() {
             move(snake);
-        }, MOVE_INTERVAL);
+        }, currentMoveInterval);
     } else {
         initGame();
     }
