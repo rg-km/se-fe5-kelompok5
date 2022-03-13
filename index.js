@@ -86,6 +86,7 @@ let ObstaclePerLevel = {
 		},
 	],
 };
+let blinkCount = 0;
 
 let snake1 = initSnake();
 
@@ -222,9 +223,10 @@ function draw() {
 			drawImagePixel(ctx, apple.position.x, apple.position.y, img);
 		}
 
-		if (health.appear) {
+		if (health.appear && !(blinkCount % 15 === 0)) {
 			drawImagePixel(ctx, health.position.x, health.position.y, lifeImg);
 		}
+		blinkCount++;
 
 		obstacle(ctx);
 
