@@ -123,9 +123,11 @@ function eat(snake, apple) {
         apple.position = initPosition();
         snake.score++;
         snake.body.push({x: snake.head.x, y: snake.head.y});
-        if (snake.score % 5 === 0) {
-            levelUp();
-            console.log(levelUp);
+        if (level < 5) {
+            if (snake.score % 5 === 0) {
+                levelUp();
+                console.log(levelUp);
+            }
         }
     }
 }
