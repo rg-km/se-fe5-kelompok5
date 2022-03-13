@@ -2,12 +2,23 @@
 	<head> </head>
 	<script type="text/javascript" src="index.js"></script>
 	<body onload="draw();">
-		<h1>Snake</h1>
-		<img id="apple" style="display: none;" width="20" height="20" src="assets/apple.png" alt="Apple">
-		<img id="head" style="display: none;" width="20" height="20" src="assets/head.png" alt="Head">
-		<img id="body" style="display: none;" width="20" height="20" src="assets/body.png" alt="Body">
-		<img id="tail" style="display: none;" width="20" height="20" src="assets/tail.png" alt="Tail">
-		<canvas id="snakeBoard" width="600" height="600" style="border: 1px solid #000000"></canvas>
+		<img id="apple" style="display: none" width="20" height="20" src="assets/apple.png" alt="Apple" />
+		<img id="head" style="display: none" width="20" height="20" src="assets/head.png" alt="Head" />
+		<img id="body" style="display: none" width="20" height="20" src="assets/body.png" alt="Body" />
+		<img id="tail" style="display: none" width="20" height="20" src="assets/tail.png" alt="Tail" />
+		<div>
+			<h1>Snake</h1>
+			<div style="position: relative; width: 600px; height: 600px">
+				<canvas id="snakeBoard" width="600" height="600" style="border: 1px solid #000000"></canvas>
+				<div style="position: absolute; top: 5px; left: 5px">
+					<div style="display: flex; gap: 4px" id="life">
+						<img src="./assets/life.png" alt="" />
+						<img src="./assets/life.png" alt="" />
+						<img src="./assets/life.png" alt="" />
+					</div>
+				</div>
+			</div>
+		</div>
 		<canvas id="score1Board" width="100" height="100" style="border: 1px solid #000000"></canvas>
 		<div>
 			<div>Snake Game - level <span id="level">1</span></div>
