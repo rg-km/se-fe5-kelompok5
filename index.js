@@ -12,7 +12,7 @@ const DIRECTION = {
 
 const moveInterval = 120;
 let currentMoveInterval = moveInterval;
-let level = 4;
+let level = 1;
 let life = 3;
 let score = 0;
 
@@ -69,6 +69,20 @@ let ObstaclePerLevel = {
 			y: 20,
 			length: 24,
 			direction: 'horizontal',
+		},
+	],
+	5: [
+		{
+			x: 8,
+			y: 3,
+			length: 24,
+			direction: 'vertical',
+		},
+		{
+			x: 20,
+			y: 3,
+			length: 24,
+			direction: 'vertical',
 		},
 	],
 };
@@ -170,7 +184,7 @@ function drawObstacle(ctx, x, y, length, direction) {
 	let tmpArray = [];
 	if (direction === 'vertical') {
 		for (let i = y; i < y + length; i++) {
-			tmpArray.push({ x: i, y: 13 });
+			tmpArray.push({ x: x, y: i });
 			drawImagePixel(ctx, x, i, obstacleImg);
 		}
 	} else if (direction === 'horizontal') {
@@ -245,8 +259,8 @@ function eat(snake, apples) {
 			health.position = initPosition();
 			if (level < 5) {
 				if (score % 5 === 0) {
+					dataObstacle = [];
 					levelUp();
-					console.log(levelUp);
 				}
 			}
 		}
@@ -329,15 +343,18 @@ function checkCollision(snakes) {
 
 	if (isCollide) {
 		audioGameOver.play();
-		alert('Game over');
 		snake1 = initSnake();
 		life--;
 		if (life < 1) {
+			alert('Game over');
 			life = 3;
 			score = 0;
 			currentMoveInterval = moveInterval;
 			level = 1;
 			updateHtml();
+			dataObstacle = [];
+		} else {
+			alert(`Nyawa anda tersisa ${life}`);
 		}
 		updateLifeHtml();
 	}
