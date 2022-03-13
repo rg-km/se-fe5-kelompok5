@@ -274,6 +274,12 @@ function eatLife(snake) {
 		updateLifeHtml();
 		health.appear = isPrimeNumber(score);
 		health.position = initPosition();
+		if (level < 5) {
+			if (score % 5 === 0) {
+				dataObstacle = [];
+				levelUp();
+			}
+		}
 	}
 }
 
