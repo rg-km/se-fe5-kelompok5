@@ -12,7 +12,7 @@ const DIRECTION = {
 
 const moveInterval = 120;
 let currentMoveInterval = moveInterval;
-let level = 2;
+let level = 4;
 let life = 3;
 let score = 0;
 
@@ -29,7 +29,7 @@ audioAppleBite.src = 'assets/apple-bite.mp3';
 let dataObstacle = [];
 
 let ObstaclePerLevel = {
-	1: [
+	2: [
 		{
 			x: 3,
 			y: 14,
@@ -37,10 +37,30 @@ let ObstaclePerLevel = {
 			direction: 'horizontal',
 		},
 	],
-	2: [
+	3: [
 		{
 			x: 3,
 			y: 10,
+			length: 24,
+			direction: 'horizontal',
+		},
+		{
+			x: 3,
+			y: 20,
+			length: 24,
+			direction: 'horizontal',
+		},
+	],
+	4: [
+		{
+			x: 3,
+			y: 10,
+			length: 24,
+			direction: 'horizontal',
+		},
+		{
+			x: 3,
+			y: 15,
 			length: 24,
 			direction: 'horizontal',
 		},
@@ -140,7 +160,7 @@ function drawScore(snake) {
 }
 
 function obstacle(ctx) {
-	let currentObstacle = ObstaclePerLevel[level];
+	let currentObstacle = ObstaclePerLevel[level] ?? [];
 	currentObstacle.forEach(obstacle => {
 		drawObstacle(ctx, obstacle.x, obstacle.y, obstacle.length, obstacle.direction);
 	});
