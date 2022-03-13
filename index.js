@@ -18,11 +18,90 @@ let score = 0;
 
 // declare assets
 let lifeImg = new Image();
+let obstacleImg = new Image();
 lifeImg.src = './assets/life.png';
+obstacleImg.src = './assets/obstacle.png';
 let audioGameOver = new Audio();
 let audioAppleBite = new Audio();
 audioGameOver.src = 'assets/game-over.mp3';
 audioAppleBite.src = 'assets/apple-bite.mp3';
+
+let dataObstacle = [];
+
+let ObstaclePerLevel = {
+	2: [
+		{
+			x: 3,
+			y: 14,
+			length: 24,
+			direction: 'horizontal',
+		},
+	],
+	3: [
+		{
+			x: 3,
+			y: 10,
+			length: 24,
+			direction: 'horizontal',
+		},
+		{
+			x: 3,
+			y: 20,
+			length: 24,
+			direction: 'horizontal',
+		},
+	],
+	4: [
+		{
+			x: 3,
+			y: 10,
+			length: 24,
+			direction: 'horizontal',
+		},
+		{
+			x: 3,
+			y: 15,
+			length: 24,
+			direction: 'horizontal',
+		},
+		{
+			x: 3,
+			y: 20,
+			length: 24,
+			direction: 'horizontal',
+		},
+	],
+	5: [
+		{
+			x: 8,
+			y: 3,
+			length: 24,
+			direction: 'vertical',
+		},
+		{
+			x: 20,
+			y: 3,
+			length: 24,
+			direction: 'vertical',
+		},
+	],
+};
+
+let snake1 = initSnake();
+
+let apples = [
+	{
+		position: initPosition(),
+	},
+	{
+		position: initPosition(),
+	},
+];
+
+let health = {
+	appear: false,
+	position: initPosition(),
+};
 
 function levelUp() {
 	level++;
@@ -69,21 +148,6 @@ function initSnake() {
 		direction: initDirection(),
 	};
 }
-let snake1 = initSnake();
-
-let apples = [
-	{
-		position: initPosition(),
-	},
-	{
-		position: initPosition(),
-	},
-];
-
-let health = {
-	appear: false,
-	position: initPosition(),
-};
 
 function updateLifeHtml() {
 	let lifeElement = document.getElementById('life');
@@ -107,6 +171,29 @@ function drawScore(snake) {
 	scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 	scoreCtx.font = '30px Arial';
 	scoreCtx.fillText(score, 10, scoreCanvas.scrollHeight / 2);
+}
+
+function obstacle(ctx) {
+	let currentObstacle = ObstaclePerLevel[level] ?? [];
+	currentObstacle.forEach(obstacle => {
+		drawObstacle(ctx, obstacle.x, obstacle.y, obstacle.length, obstacle.direction);
+	});
+}
+
+function drawObstacle(ctx, x, y, length, direction) {
+	let tmpArray = [];
+	if (direction === 'vertical') {
+		for (let i = y; i < y + length; i++) {
+			tmpArray.push({ x: x, y: i });
+			drawImagePixel(ctx, x, i, obstacleImg);
+		}
+	} else if (direction === 'horizontal') {
+		for (let i = x; i < x + length; i++) {
+			tmpArray.push({ x: i, y: y });
+			drawImagePixel(ctx, i, y, obstacleImg);
+		}
+	}
+	dataObstacle.push(tmpArray);
 }
 
 function draw() {
@@ -139,6 +226,8 @@ function draw() {
 			drawImagePixel(ctx, health.position.x, health.position.y, lifeImg);
 		}
 
+		obstacle(ctx);
+
 		drawScore(snake1);
 	}, REDRAW_INTERVAL);
 }
@@ -170,8 +259,8 @@ function eat(snake, apples) {
 			health.position = initPosition();
 			if (level < 5) {
 				if (score % 5 === 0) {
+					dataObstacle = [];
 					levelUp();
-					console.log(levelUp);
 				}
 			}
 		}
@@ -241,17 +330,31 @@ function checkCollision(snakes) {
 			}
 		}
 	}
+
+	for (let i = 0; i < snakes.length; i++) {
+		for (let j = 0; j < dataObstacle.length; j++) {
+			for (let k = 0; k < dataObstacle[j].length; k++) {
+				if (snakes[i].head.x == dataObstacle[j][k].x && snakes[i].head.y == dataObstacle[j][k].y) {
+					isCollide = true;
+				}
+			}
+		}
+	}
+
 	if (isCollide) {
 		audioGameOver.play();
-		alert('Game over');
 		snake1 = initSnake();
 		life--;
 		if (life < 1) {
+			alert('Game over');
 			life = 3;
 			score = 0;
 			currentMoveInterval = moveInterval;
 			level = 1;
 			updateHtml();
+			dataObstacle = [];
+		} else {
+			alert(`Nyawa anda tersisa ${life}`);
 		}
 		updateLifeHtml();
 	}
