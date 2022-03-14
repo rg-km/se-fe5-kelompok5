@@ -7,18 +7,29 @@
 		<img id="body" style="display: none" width="20" height="20" src="assets/body.png" alt="Body" />
 		<img id="tail" style="display: none" width="20" height="20" src="assets/tail.png" alt="Tail" />
 		<div>
-			<div style="width: 600; height: auto; margin: auto;">
-				<div style="display: flex; gap: 100px;">
-					<canvas id="score1Board" width="100" height="60" style="border: 4px solid #4b2b75; border-radius: 20px 20px 0 0;"></canvas>
-					<div style="flex-direction: column; text-align: center; margin: auto 0;">
+			<div style="width: 600; height: auto; margin: auto">
+				<div style="display: flex; justify-content: space-between">
+					<canvas
+						id="score1Board"
+						width="100"
+						height="60"
+						style="border: 4px solid #4b2b75; border-radius: 20px 20px 0 0"
+					></canvas>
+					<div style="flex-direction: column; text-align: center; margin: auto 0">
 						<h3 style="margin: 0">Snake Game - level <span id="level">1</span></h3>
-						<h4 style="margin: 0">Speed: <span id="speed">120</span>ms</h4>						
+						<h4 style="margin: 0">Speed: <span id="speed">120</span>ms</h4>
 					</div>
+					<canvas
+						id="highscore"
+						width="100"
+						height="60"
+						style="border: 4px solid #4b2b75; border-radius: 20px 20px 0 0"
+					></canvas>
 				</div>
 			</div>
-			
-			<div style="position: relative; display: block; margin: auto; width: 600px; height: 600px">				
-				<canvas id="snakeBoard" width="600" height="600" style="background: url('assets/plain-bg.png');"></canvas>
+
+			<div style="position: relative; display: block; margin: auto; width: 600px; height: 600px">
+				<canvas id="snakeBoard" width="600" height="600" style="background: url('assets/plain-bg.png')"></canvas>
 				<div style="position: absolute; top: 5px; left: 5px">
 					<div style="display: flex; gap: 4px" id="life">
 						<img src="./assets/life.png" alt="" />
@@ -27,7 +38,6 @@
 					</div>
 				</div>
 			</div>
-		</div>		
-		
+		</div>
 	</body>
 </html>

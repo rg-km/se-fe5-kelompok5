@@ -15,6 +15,7 @@ let currentMoveInterval = moveInterval;
 let level = 1;
 let life = 3;
 let score = 0;
+let highscore = localStorage.getItem('highscore') ?? 0;
 
 // declare assets
 let lifeImg = new Image();
@@ -176,13 +177,27 @@ function drawImagePixel(ctx, x, y, img) {
 }
 
 function drawScore(snake) {
-	let scoreCanvas;
+	let scoreCanvas, highscoreCanvas;
 	scoreCanvas = document.getElementById('score1Board');
+	highscoreCanvas = document.getElementById('highscore');
 	let scoreCtx = scoreCanvas.getContext('2d');
 
 	scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 	scoreCtx.font = '30px Arial';
 	scoreCtx.fillText(score, 10, scoreCanvas.scrollHeight / 2);
+	scoreCtx.fillText(highscore, 300, highscoreCanvas.scrollHeight / 2);
+}
+
+function drawHighscore(snake) {
+	let highscoreCanvas;
+	highscoreCanvas = document.getElementById('highscore');
+	let scoreCtx = highscoreCanvas.getContext('2d');
+
+	scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+	scoreCtx.font = '30px Arial';
+	scoreCtx.fillText(highscore, 40, highscoreCanvas.scrollHeight / 2 + 20);
+	scoreCtx.font = '20px Arial';
+	scoreCtx.fillText("highscore", 10, highscoreCanvas.scrollHeight / 2 - 10);
 }
 
 function obstacle(ctx) {
@@ -242,6 +257,7 @@ function draw() {
 		obstacle(ctx);
 
 		drawScore(snake1);
+		drawHighscore();
 	}, REDRAW_INTERVAL);
 }
 
@@ -267,6 +283,10 @@ function eat(snake, apples) {
 			apple.position = initPosition(snake);
 			audioAppleBite.play();
 			score++;
+			if (score > highscore) {
+				highscore = score;
+				localStorage.setItem('highscore', score);
+			}
 			snake.body.push({ x: snake.head.x, y: snake.head.y });
 			health.appear = isPrimeNumber(score);
 			health.position = initPosition(snake);
@@ -284,6 +304,10 @@ function eatLife(snake) {
 	if (health.appear == true && snake.head.x == health.position.x && snake.head.y == health.position.y) {
 		life++;
 		score++;
+		if (score > highscore) {
+			highscore = score;
+			localStorage.setItem('highscore', score);
+		}
 		updateLifeHtml();
 		health.appear = isPrimeNumber(score);
 		health.position = initPosition(snake);
