@@ -117,7 +117,7 @@ function levelUp() {
 	}
 
 	audioGameComplete.play();
-    alert(`Selamat anda Naik level ${level}`);
+	alert(`Selamat anda Naik level ${level}`);
 	updateHtml();
 }
 
@@ -128,10 +128,16 @@ function updateHtml() {
 	speedHtml.innerText = currentMoveInterval;
 }
 
-function initPosition() {
+function initPosition(snake) {
+	let x = Math.floor(Math.random() * WIDTH);
+	let y = Math.floor(Math.random() * HEIGHT);
+	while (checkCollisionObstacle(x, y, snake)) {
+		x = Math.floor(Math.random() * WIDTH);
+		y = Math.floor(Math.random() * HEIGHT);
+	}
 	return {
-		x: Math.floor(Math.random() * WIDTH),
-		y: Math.floor(Math.random() * HEIGHT),
+		x,
+		y,
 	};
 }
 
@@ -258,12 +264,12 @@ function eat(snake, apples) {
 	for (let i = 0; i < apples.length; i++) {
 		let apple = apples[i];
 		if (snake.head.x == apple.position.x && snake.head.y == apple.position.y) {
-			apple.position = initPosition();
+			apple.position = initPosition(snake);
 			audioAppleBite.play();
 			score++;
 			snake.body.push({ x: snake.head.x, y: snake.head.y });
 			health.appear = isPrimeNumber(score);
-			health.position = initPosition();
+			health.position = initPosition(snake);
 			if (level < 5) {
 				if (score % 5 === 0) {
 					dataObstacle = [];
@@ -280,7 +286,7 @@ function eatLife(snake) {
 		score++;
 		updateLifeHtml();
 		health.appear = isPrimeNumber(score);
-		health.position = initPosition();
+		health.position = initPosition(snake);
 		if (level < 5) {
 			if (score % 5 === 0) {
 				dataObstacle = [];
@@ -331,6 +337,33 @@ function moveUp(snake) {
 	eatLife(snake);
 }
 
+function checkCollisionObstacle(x, y, snake) {
+	let isCollide = false;
+	//this
+	if (snake) {
+		console.log(snake);
+		if (x == snake.head.x && y == snake.head.y) {
+			isCollide = true;
+		}
+
+		for (let k = 1; k < snake.body.length; k++) {
+			if (x == snake.body[k].x && y == snake.body[k].y) {
+				isCollide = true;
+			}
+		}
+	}
+
+	for (let j = 0; j < dataObstacle.length; j++) {
+		for (let k = 0; k < dataObstacle[j].length; k++) {
+			if (x == dataObstacle[j][k].x && y == dataObstacle[j][k].y) {
+				isCollide = true;
+			}
+		}
+	}
+
+	return isCollide;
+}
+
 function checkCollision(snakes) {
 	let isCollide = false;
 	//this
@@ -349,7 +382,7 @@ function checkCollision(snakes) {
 			for (let k = 0; k < dataObstacle[j].length; k++) {
 				if (snakes[i].head.x == dataObstacle[j][k].x && snakes[i].head.y == dataObstacle[j][k].y) {
 					isCollide = true;
-                    audioBlockHit.play();
+					audioBlockHit.play();
 				}
 			}
 		}
@@ -359,7 +392,7 @@ function checkCollision(snakes) {
 		snake1 = initSnake();
 		life--;
 		if (life < 1) {
-		    audioGameOver.play();
+			audioGameOver.play();
 			alert('Game over');
 			life = 3;
 			score = 0;
