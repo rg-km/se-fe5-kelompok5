@@ -15,6 +15,7 @@ let currentMoveInterval = moveInterval;
 let level = 1;
 let life = 3;
 let score = 0;
+let highscore = localStorage.getItem('highscore') ?? 0;
 
 // declare assets
 let lifeImg = new Image();
@@ -117,7 +118,7 @@ function levelUp() {
 	}
 
 	audioGameComplete.play();
-    alert(`Selamat anda Naik level ${level}`);
+	alert(`Selamat anda Naik level ${level}`);
 	updateHtml();
 }
 
@@ -128,10 +129,16 @@ function updateHtml() {
 	speedHtml.innerText = currentMoveInterval;
 }
 
-function initPosition() {
+function initPosition(snake) {
+	let x = Math.floor(Math.random() * WIDTH);
+	let y = Math.floor(Math.random() * HEIGHT);
+	while (checkCollisionObstacle(x, y, snake)) {
+		x = Math.floor(Math.random() * WIDTH);
+		y = Math.floor(Math.random() * HEIGHT);
+	}
 	return {
-		x: Math.floor(Math.random() * WIDTH),
-		y: Math.floor(Math.random() * HEIGHT),
+		x,
+		y,
 	};
 }
 
@@ -170,13 +177,27 @@ function drawImagePixel(ctx, x, y, img) {
 }
 
 function drawScore(snake) {
-	let scoreCanvas;
+	let scoreCanvas, highscoreCanvas;
 	scoreCanvas = document.getElementById('score1Board');
+	highscoreCanvas = document.getElementById('highscore');
 	let scoreCtx = scoreCanvas.getContext('2d');
 
 	scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 	scoreCtx.font = '30px Arial';
 	scoreCtx.fillText(score, 10, scoreCanvas.scrollHeight / 2);
+	scoreCtx.fillText(highscore, 300, highscoreCanvas.scrollHeight / 2);
+}
+
+function drawHighscore(snake) {
+	let highscoreCanvas;
+	highscoreCanvas = document.getElementById('highscore');
+	let scoreCtx = highscoreCanvas.getContext('2d');
+
+	scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+	scoreCtx.font = '30px Arial';
+	scoreCtx.fillText(highscore, 40, highscoreCanvas.scrollHeight / 2 + 20);
+	scoreCtx.font = '20px Arial';
+	scoreCtx.fillText("highscore", 10, highscoreCanvas.scrollHeight / 2 - 10);
 }
 
 function obstacle(ctx) {
@@ -236,6 +257,7 @@ function draw() {
 		obstacle(ctx);
 
 		drawScore(snake1);
+		drawHighscore();
 	}, REDRAW_INTERVAL);
 }
 
@@ -258,12 +280,16 @@ function eat(snake, apples) {
 	for (let i = 0; i < apples.length; i++) {
 		let apple = apples[i];
 		if (snake.head.x == apple.position.x && snake.head.y == apple.position.y) {
-			apple.position = initPosition();
+			apple.position = initPosition(snake);
 			audioAppleBite.play();
 			score++;
+			if (score > highscore) {
+				highscore = score;
+				localStorage.setItem('highscore', score);
+			}
 			snake.body.push({ x: snake.head.x, y: snake.head.y });
 			health.appear = isPrimeNumber(score);
-			health.position = initPosition();
+			health.position = initPosition(snake);
 			if (level < 5) {
 				if (score % 5 === 0) {
 					dataObstacle = [];
@@ -278,9 +304,13 @@ function eatLife(snake) {
 	if (health.appear == true && snake.head.x == health.position.x && snake.head.y == health.position.y) {
 		life++;
 		score++;
+		if (score > highscore) {
+			highscore = score;
+			localStorage.setItem('highscore', score);
+		}
 		updateLifeHtml();
 		health.appear = isPrimeNumber(score);
-		health.position = initPosition();
+		health.position = initPosition(snake);
 		if (level < 5) {
 			if (score % 5 === 0) {
 				dataObstacle = [];
@@ -331,6 +361,33 @@ function moveUp(snake) {
 	eatLife(snake);
 }
 
+function checkCollisionObstacle(x, y, snake) {
+	let isCollide = false;
+	//this
+	if (snake) {
+		console.log(snake);
+		if (x == snake.head.x && y == snake.head.y) {
+			isCollide = true;
+		}
+
+		for (let k = 1; k < snake.body.length; k++) {
+			if (x == snake.body[k].x && y == snake.body[k].y) {
+				isCollide = true;
+			}
+		}
+	}
+
+	for (let j = 0; j < dataObstacle.length; j++) {
+		for (let k = 0; k < dataObstacle[j].length; k++) {
+			if (x == dataObstacle[j][k].x && y == dataObstacle[j][k].y) {
+				isCollide = true;
+			}
+		}
+	}
+
+	return isCollide;
+}
+
 function checkCollision(snakes) {
 	let isCollide = false;
 	//this
@@ -349,7 +406,7 @@ function checkCollision(snakes) {
 			for (let k = 0; k < dataObstacle[j].length; k++) {
 				if (snakes[i].head.x == dataObstacle[j][k].x && snakes[i].head.y == dataObstacle[j][k].y) {
 					isCollide = true;
-                    audioBlockHit.play();
+					audioBlockHit.play();
 				}
 			}
 		}
@@ -359,7 +416,7 @@ function checkCollision(snakes) {
 		snake1 = initSnake();
 		life--;
 		if (life < 1) {
-		    audioGameOver.play();
+			audioGameOver.play();
 			alert('Game over');
 			life = 3;
 			score = 0;
