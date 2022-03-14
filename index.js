@@ -182,9 +182,9 @@ function drawScore(snake) {
 	let scoreCtx = scoreCanvas.getContext('2d');
 
 	scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-	scoreCtx.font = '30px Arial';
+	scoreCtx.font = '30px Open Sans';
 	scoreCtx.fillText(score, 40, scoreCanvas.scrollHeight / 2 + 20);
-	scoreCtx.font = '20px Arial';
+	scoreCtx.font = '20px Open Sans';
 	scoreCtx.fillText('score', 25, scoreCanvas.scrollHeight / 2 - 10);
 }
 
@@ -194,9 +194,9 @@ function drawHighscore(snake) {
 	let scoreCtx = highscoreCanvas.getContext('2d');
 
 	scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-	scoreCtx.font = '30px Arial';
+	scoreCtx.font = '30px Open Sans';
 	scoreCtx.fillText(highscore, 40, highscoreCanvas.scrollHeight / 2 + 20);
-	scoreCtx.font = '20px Arial';
+	scoreCtx.font = '18px Open Sans';
 	scoreCtx.fillText('highscore', 10, highscoreCanvas.scrollHeight / 2 - 10);
 }
 
