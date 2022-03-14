@@ -177,15 +177,15 @@ function drawImagePixel(ctx, x, y, img) {
 }
 
 function drawScore(snake) {
-	let scoreCanvas, highscoreCanvas;
+	let scoreCanvas;
 	scoreCanvas = document.getElementById('score1Board');
-	highscoreCanvas = document.getElementById('highscore');
 	let scoreCtx = scoreCanvas.getContext('2d');
 
 	scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 	scoreCtx.font = '30px Arial';
-	scoreCtx.fillText(score, 10, scoreCanvas.scrollHeight / 2);
-	scoreCtx.fillText(highscore, 300, highscoreCanvas.scrollHeight / 2);
+	scoreCtx.fillText(score, 40, scoreCanvas.scrollHeight / 2 + 20);
+	scoreCtx.font = '20px Arial';
+	scoreCtx.fillText('score', 25, scoreCanvas.scrollHeight / 2 - 10);
 }
 
 function drawHighscore(snake) {
@@ -197,7 +197,7 @@ function drawHighscore(snake) {
 	scoreCtx.font = '30px Arial';
 	scoreCtx.fillText(highscore, 40, highscoreCanvas.scrollHeight / 2 + 20);
 	scoreCtx.font = '20px Arial';
-	scoreCtx.fillText("highscore", 10, highscoreCanvas.scrollHeight / 2 - 10);
+	scoreCtx.fillText('highscore', 10, highscoreCanvas.scrollHeight / 2 - 10);
 }
 
 function obstacle(ctx) {
