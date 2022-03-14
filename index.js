@@ -23,8 +23,12 @@ lifeImg.src = './assets/life.png';
 obstacleImg.src = './assets/obstacle.png';
 let audioGameOver = new Audio();
 let audioAppleBite = new Audio();
-audioGameOver.src = 'assets/game-over.mp3';
-audioAppleBite.src = 'assets/apple-bite.mp3';
+let audioGameComplete = new Audio();
+let audioBlockHit = new Audio();
+audioGameOver.src = './assets/game-over.mp3';
+audioAppleBite.src = './assets/apple-bite.mp3';
+audioGameComplete.src = './assets/game-complete.wav';
+audioBlockHit.src = './assets/block-hit.wav';
 
 let dataObstacle = [];
 
@@ -112,7 +116,8 @@ function levelUp() {
 		currentMoveInterval = 40;
 	}
 
-	alert(`Selamat anda Naik level ${level}`);
+	audioGameComplete.play();
+    alert(`Selamat anda Naik level ${level}`);
 	updateHtml();
 }
 
@@ -344,16 +349,17 @@ function checkCollision(snakes) {
 			for (let k = 0; k < dataObstacle[j].length; k++) {
 				if (snakes[i].head.x == dataObstacle[j][k].x && snakes[i].head.y == dataObstacle[j][k].y) {
 					isCollide = true;
+                    audioBlockHit.play();
 				}
 			}
 		}
 	}
 
 	if (isCollide) {
-		audioGameOver.play();
 		snake1 = initSnake();
 		life--;
 		if (life < 1) {
+		    audioGameOver.play();
 			alert('Game over');
 			life = 3;
 			score = 0;
